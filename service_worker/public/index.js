@@ -1,9 +1,9 @@
 import { unEscape, captureZone, getCurrentTab, readStorage } from '/service.js'
-import { AnnotateJpZone, translateZone, visionZone, audioZone, AddAnkiCard, AddKanjiCard } from '/fetch.js'
+import { AnnotateJpZone, translateZone, visionZone, visionVeebee, audioZone, AddAnkiCard, AddKanjiCard } from '/fetch.js'
 
 (async function() { 
 
-let vision, visionText, userApi, apiCount, translation, jpAnnotation, b64, b64audio
+let vision, visionText, userApi, apiCount, translation, jpAnnotation, b64, b64audio, firebaseToken
 
 chrome.commands.onCommand.addListener( async (command) => {
     const currentTab = await getCurrentTab()
@@ -58,7 +58,7 @@ async function gotMessage(request, sendResponse) {
     if (request.type == "request-vision") {
         b64 = await captureZone(request.x1, request.y1, request.x2, request.y2, request.pixelRatio, request.tabHeight, request.tabWidth);
         // console.log("b64", b64)
-        const [viz, vizText] = await visionZone(b64, userApi)
+        const [viz, vizText] = await visionVeebee(b64, firebaseToken)
         vision = viz
         visionText = vizText
         // console.log("visionText", visionText, "vision", vision)
@@ -135,6 +135,10 @@ async function gotMessage(request, sendResponse) {
     } // add anki / kanji cards
     if (request.type == "updated_API") {
         userApi = request.userApi
+        // console.log("updated_API", request.userApi)
+    }
+    if (request.type == "updated_token") {
+        firebaseToken = request.firebaseToken
         // console.log("updated_API", request.userApi)
     }
     if (request.type == "reset-counter") {

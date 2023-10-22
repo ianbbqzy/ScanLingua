@@ -2,6 +2,7 @@ import { ApiInput } from "./ApiInput";
 import { Contacts } from "./Contacts";
 import { ContentBox, CenteredP, MainContainer, NameSpan, CenteredBox } from "./Container";
 import { Counter } from "./Counter";
+import { Signin } from "./Signin";
 
 export function Home() {
 
@@ -20,6 +21,7 @@ export function Home() {
             Welcome to <NameSpan>ScanLingua</NameSpan>!
           </CenteredP>
         </ContentBox>
+        <Signin />
         <ApiInput />
         <CenteredBox>
           <CenteredP> 

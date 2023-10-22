@@ -149,6 +149,36 @@ export async function visionZone(base64result, userApi) {
     }
 } // fetch vision
 
+export async function visionVeebee(base64result, token) { 
+    let vision, visionText, translation
+
+    const headers = new Headers();
+
+    headers.append('Authorization', `Bearer ${token}`);
+    headers.append('Content-Type', `application/json`);
+
+    try {
+        const response = await fetch('https://chrome-extension-translation.wn.r.appspot.com/translate-img?api=deepl' + '&source_lang=Japanese' + '&target_lang=English' + "&pronunciation=false", {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+            'imageDataUrl': base64result
+            })
+        })
+
+        const resp = await response.json();
+        if (resp.error) {
+            visionText = `Translation: ${resp.error}`
+        } else {
+            visionText = resp.original
+        }
+    } catch (err) {
+        visionText =  `Translation: ${err.message}`;
+    }
+
+    return [vision, visionText]
+} // f
+
 export async function AddAnkiCard(visionText, b64, translation, b64audio) {
     try {
     const translate = await fetch("http://localhost:8765", {
